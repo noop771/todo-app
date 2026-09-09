@@ -13,13 +13,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 15px;
 }
 
 .container {
     background: white;
     border-radius: 20px;
-    padding: 30px;
+    padding: 25px 20px;
     max-width: 600px;
     width: 100%;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -28,18 +28,54 @@ body {
 h1 {
     text-align: center;
     color: #333;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    font-size: 24px;
 }
 
+/* ===== Верхняя панель (заголовок + кнопка "Выйти") ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.header h1 {
+    margin-bottom: 0;
+    font-size: 22px;
+}
+
+.logout-btn {
+    padding: 8px 16px;
+    background: #ff3b30;
+    color: white;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+    white-space: nowrap;
+}
+
+.logout-btn:hover {
+    background: #e0352b;
+    transform: scale(1.05);
+}
+
+/* ===== Форма добавления задачи ===== */
 .add-form {
     display: flex;
     gap: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 #taskInput {
     flex: 1;
-    padding: 12px 18px;
+    min-width: 150px;
+    padding: 12px 16px;
     border: 2px solid #e0e0e0;
     border-radius: 30px;
     font-size: 16px;
@@ -52,7 +88,7 @@ h1 {
 }
 
 #addBtn {
-    padding: 12px 25px;
+    padding: 12px 24px;
     background: #667eea;
     color: white;
     border: none;
@@ -61,6 +97,7 @@ h1 {
     font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 #addBtn:hover {
@@ -68,21 +105,24 @@ h1 {
     transform: scale(1.05);
 }
 
+/* ===== Список задач ===== */
 #taskList {
     margin-top: 10px;
 }
 
 .task-item {
     background: #f8f9fa;
-    padding: 15px 20px;
+    padding: 14px 16px;
     border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
     transition: all 0.4s ease;
     opacity: 1;
     transform: translateX(0);
+    flex-wrap: wrap;
 }
 
 .task-item.removing {
@@ -90,19 +130,22 @@ h1 {
     transform: translateX(100px);
     height: 0;
     margin: 0;
-    padding: 0 20px;
+    padding: 0 16px;
     overflow: hidden;
 }
 
 .task-text {
     font-size: 16px;
     color: #333;
-    word-break: break-all;
+    word-break: break-word;
+    flex: 1;
+    min-width: 120px;
 }
 
 .task-actions {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .btn-done {
@@ -142,4 +185,148 @@ h1 {
     color: #999;
     padding: 30px 0;
     font-style: italic;
+}
+
+/* ===== Страницы входа и регистрации ===== */
+.auth-form {
+    max-width: 400px;
+    margin: 30px auto;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 30px;
+    border: 2px solid #e0e0e0;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.auth-form input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 14px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.auth-form button:hover {
+    background: #5a6fd6;
+    transform: scale(1.02);
+}
+
+.auth-form a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #667eea;
+    font-size: 16px;
+}
+
+.auth-form .error {
+    color: #ff3b30;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+/* ===== Адаптация для телефонов (ширина ≤ 480px) ===== */
+@media (max-width: 480px) {
+    .container {
+        padding: 18px 14px;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .header h1 {
+        font-size: 18px;
+    }
+
+    .logout-btn {
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+
+    #taskInput {
+        font-size: 15px;
+        padding: 10px 14px;
+        min-width: 120px;
+    }
+
+    #addBtn {
+        font-size: 15px;
+        padding: 10px 18px;
+    }
+
+    .task-item {
+        padding: 12px 14px;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .task-text {
+        font-size: 15px;
+        min-width: unset;
+        margin-bottom: 8px;
+    }
+
+    .task-actions {
+        justify-content: flex-end;
+    }
+
+    .btn-done,
+    .btn-delete {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    .auth-form {
+        margin: 20px auto;
+    }
+
+    .auth-form input {
+        font-size: 15px;
+        padding: 10px 14px;
+    }
+
+    .auth-form button {
+        font-size: 16px;
+        padding: 12px;
+    }
+}
+
+/* ===== Адаптация для очень маленьких экранов (ширина ≤ 360px) ===== */
+@media (max-width: 360px) {
+    .add-form {
+        flex-direction: column;
+    }
+
+    #addBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .task-actions {
+        justify-content: stretch;
+    }
+
+    .btn-done,
+    .btn-delete {
+        flex: 1;
+        text-align: center;
+    }
 }

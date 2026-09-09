@@ -2,20 +2,22 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Менеджер задач</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div class="header">
             <h1>📋 Мои задачи</h1>
-            <a href="/logout" style="padding: 8px 16px; background: #ff3b30; color: white; border-radius: 8px; text-decoration: none; font-size: 14px;">Выйти</a>
+            <a href="/logout" class="logout-btn">Выйти</a>
         </div>
+
         <div class="add-form">
             <input type="text" id="taskInput" placeholder="Введите задачу...">
             <button id="addBtn">Добавить</button>
         </div>
+
         <div id="taskList"></div>
     </div>
 
