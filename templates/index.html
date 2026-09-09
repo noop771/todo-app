@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Менеджер задач</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+        .add-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        #taskInput {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        #taskInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        #addBtn {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        #addBtn:hover {
+            background: #5a6fd6;
+            transform: scale(1.05);
+        }
+        .task-item {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            transition: all 0.4s ease;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .task-item.removing {
+            opacity: 0;
+            transform: translateX(100px);
+            height: 0;
+            margin: 0;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+        .task-text {
+            font-size: 16px;
+            color: #333;
+            word-break: break-all;
+        }
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-done {
+            background: #34c759;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .btn-done:hover {
+            background: #2db84d;
+            transform: scale(1.05);
+        }
+        .btn-delete {
+            background: #ff3b30;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+        .btn-delete:hover {
+            background: #e0352b;
+            transform: scale(1.05);
+        }
+        #emptyMsg {
+            text-align: center;
+            color: #999;
+            padding: 30px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Мои задачи</h1>
+        <div class="add-form">
+            <input type="text" id="taskInput" placeholder="Введите задачу...">
+            <button id="addBtn">Добавить</button>
+        </div>
+        <div id="taskList"></div>
+    </div>
+
+    <script>
+        // Функция загрузки задач с сервера
+        async function loadTasks() {
+            const response = await fetch('/api/tasks');
+            const tasks = await response.json();
+            renderTasks(tasks);
+        }
+
+        // Функция отображения задач
+        function renderTasks(tasks) {
+            const list = document.getElementById('taskList');
+            if (tasks.length === 0) {
+                list.innerHTML = '<div id="emptyMsg">✨ Пока нет задач. Добавьте первую!</div>';
+                return;
+            }
+            list.innerHTML = '';
+            tasks.forEach(task => {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                div.id = 'task-' + task.id;
+                div.innerHTML = `
+                    <span class="task-text">${task.text}</span>
+                    <div class="task-actions">
+                        <button class="btn-done" onclick="deleteTask(${task.id})">✔ Готово</button>
+                        <button class="btn-delete" onclick="forceDelete(${task.id})">✖ Удалить</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Функция добавления задачи
+        document.getElementById('addBtn').onclick = async function() {
+            const input = document.getElementById('taskInput');
+            const text = input.value.trim();
+            if (!text) {
+                alert('Введите текст задачи!');
+                return;
+            }
+            // Отправляем на сервер
+            await fetch('/api/add', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: text})
+            });
+            input.value = '';
+            loadTasks(); // перезагружаем список
+        };
+
+        // Функция удаления с анимацией (кнопка "Готово")
+        async function deleteTask(taskId) {
+            const el = document.getElementById('task-' + taskId);
+            if (!el) return;
+            // Запускаем анимацию исчезновения
+            el.classList.add('removing');
+            // Ждём 400 мс (пока анимация закончится)
+            setTimeout(async () => {
+                // Удаляем на сервере
+                await fetch('/api/delete/' + taskId, {method: 'POST'});
+                loadTasks(); // обновляем список
+            }, 400);
+        }
+
+        // Функция немедленного удаления (кнопка "Удалить")
+        async function forceDelete(taskId) {
+            // Сразу удаляем на сервере
+            await fetch('/api/delete/' + taskId, {method: 'POST'});
+            loadTasks(); // обновляем список
+        }
+
+        // Загружаем задачи при загрузке страницы
+        loadTasks();
+    </script>
+</body>
+</html>
